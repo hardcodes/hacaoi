@@ -2,7 +2,7 @@
 // #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![doc = include_str!("../README.md")]
 // TODO: change URL, when the project has been uploaded!
-// #![doc(html_logo_url = "./resources/gfx/logo_small.png")]
+#![doc(html_logo_url = "https://raw.githubusercontent.com/hardcodes/hacaoi/6126a1fcbb6293cf0c83f8c4bf5dfacff9f658a1/resources/gfx/logo_small.png")]
 #![warn(missing_docs)]
 //!# Examples
 //!
