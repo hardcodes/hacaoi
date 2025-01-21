@@ -1,0 +1,27 @@
+[package]
+name = "hacaoi"
+description = "HaCaOI - Hades Cap Of Invisibilty - rust crate for encryption and decryption"
+version = "0.1.0"
+edition = "2021"
+authors = ["Sven Putze <github@hardcodes.de>"]
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+aes = { version = "0.8.4", optional = true }
+base64 = { version = "0.22.1", optional = true }
+cbc = { version = "0.1.2", optional = true }
+openssl = { version = "0.10", optional = true }
+rand = { version = "0.8", optional = true }
+# needed features:
+# - pkcs5: load encrypted rsa private key
+# - sha2:  sha512 signature creation and validation
+rsa = { version = "0.9.7", features = ["pkcs5", "sha2"], optional = true }
+zeroize = "1.8"
+
+
+[features]
+default = ["rust-crypto", "openssl", "b64"]
+openssl = ["dep:openssl"]
+rust-crypto = ["dep:aes", "dep:cbc", "dep:rand", "dep:rsa"]
+b64 = ["dep:base64"]
