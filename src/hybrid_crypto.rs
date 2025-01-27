@@ -1,3 +1,4 @@
+use crate::rsa::KeySize;
 use std::error::Error;
 use std::path::Path;
 
@@ -12,6 +13,15 @@ pub trait HybridCryptoFunctions {
         rsa_private_key_path: P,
         rsa_private_key_password: &str,
     ) -> Result<Self, Box<dyn Error>>
+    where
+        Self: Sized;
+
+    /// Build **HybridCrypto** with a random
+    /// RSA private key. The public key is
+    /// derived from the private key.
+    /// This may be useful for application runtime
+    /// data encryption/decryption.
+    fn random(key_size: KeySize) -> Result<Self, Box<dyn Error>>
     where
         Self: Sized;
 

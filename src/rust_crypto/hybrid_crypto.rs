@@ -71,6 +71,19 @@ impl HybridCryptoFunctions for HybridCrypto {
         Ok(HybridCrypto { rsa_keys })
     }
 
+    /// Build **HybridCrypto** with a random
+    /// RSA private key. The public key is
+    /// derived from the private key.
+    /// This may be useful for application runtime
+    /// data encryption/decryption.
+    fn random(key_size: crate::rsa::KeySize) -> Result<Self, Box<dyn Error>>
+    where
+        Self: Sized,
+    {
+        let rsa_keys = RsaKeys::random(key_size)?;
+        Ok(HybridCrypto { rsa_keys })
+    }
+
     /// Encrypt a string slice in a hybrid mode:
     ///
     /// 1. A random AES 256 key and IV are created.
