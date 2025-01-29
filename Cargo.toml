@@ -6,6 +6,9 @@ edition = "2021"
 authors = ["Sven Putze <github@hardcodes.de>"]
 readme = "README.md"
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/hardcodes/hacaoi"
+# for now publishing to crates.io is not intended
+publish = false
 
 [dependencies]
 aes = { version = "0.8.4", optional = true }
