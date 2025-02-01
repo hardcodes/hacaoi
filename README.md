@@ -9,7 +9,11 @@ This Rust library is a facade for
 - RSA encryption/decryption
 - Hybrid encryption/decryption using AES and RSA,
 
-implemented with help the Rust OpenSSL crate and with the RustCrypto crates, mainly for use at [lmtyas](https://github.com/hardcodes/lmtyas) and other non-public projects.
+implemented with help of
+- the Rust OpenSSL crate and
+- the RustCrypto crates,
+
+mainly for use at [lmtyas](https://github.com/hardcodes/lmtyas) and other non-public projects.
 
 
 ## About
