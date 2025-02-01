@@ -14,7 +14,7 @@
 //!     const PLAINTEXT: &str = "Lorem ipsum dolor sit amet";
 //!     let aes = hacaoi::aes::Aes256Cbc::<AesRustCryptoScope>::from_key_iv(AES_KEY, AES_IV);
 //!     let enrypted = aes.encrypt_str_to_vec(PLAINTEXT).unwrap();
-//!     let decrypted = aes.decrypt_bytes_to_string(enrypted).unwrap();
+//!     let decrypted = aes.decrypt_bytes_to_string(&enrypted).unwrap();
 //!     assert_eq!(decrypted, PLAINTEXT)
 //! }
 //! ```
@@ -59,11 +59,11 @@ impl Aes256CbcFunctions<AesRustCryptoScope> for Aes256Cbc<AesRustCryptoScope> {
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
     #[inline(always)]
-    fn decrypt_bytes_to_string(&self, encrypted_bytes: Vec<u8>) -> Result<String, Box<dyn Error>> {
+    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>> {
         let aes256_decryptor = Aes256CbcDec::new(&self.key().into(), &self.iv().into());
-        let mut encrypted_bytes_clone = encrypted_bytes.clone();
+        let mut encrypted_bytes_vec = encrypted_bytes.to_vec();
         let decrypted_payload =
-            match aes256_decryptor.decrypt_padded_mut::<Pkcs7>(encrypted_bytes_clone.as_mut()) {
+            match aes256_decryptor.decrypt_padded_mut::<Pkcs7>(encrypted_bytes_vec.as_mut()) {
                 Err(e) => {
                     return Err(format!("{}", &e).into());
                 }

@@ -147,7 +147,7 @@ impl HybridCryptoFunctions for HybridCrypto {
         }
         let aes = Aes256Cbc::<AesOpenSslScope>::from_vec(&aes_key_iv[0..48])?;
 
-        aes.decrypt_bytes_to_string(encrypted_payload)
+        aes.decrypt_bytes_to_string(&encrypted_payload)
     }
 
     /// Convenience function that decrypts a base64

@@ -19,7 +19,7 @@ pub trait Aes256CbcFunctions<Scope> {
     fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, Box<dyn Error>>;
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
-    fn decrypt_bytes_to_string(&self, encrypted_bytes: Vec<u8>) -> Result<String, Box<dyn Error>>;
+    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>>;
 }
 
 /// Used to encrypt or decrypt data using AES 256 in CBC mode.

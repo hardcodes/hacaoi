@@ -30,7 +30,7 @@
 //!     const PLAINTEXT: &str = "Lorem ipsum dolor sit amet";
 //!     let aes = hacaoi::aes::Aes256Cbc::<AesOpenSslScope>::from_key_iv(AES_KEY, AES_IV);
 //!     let enrypted = aes.encrypt_str_to_vec(PLAINTEXT).unwrap();
-//!     let decrypted = aes.decrypt_bytes_to_string(enrypted).unwrap();
+//!     let decrypted = aes.decrypt_bytes_to_string(&enrypted).unwrap();
 //!     assert_eq!(decrypted, PLAINTEXT)
 //! }
 //! ```

@@ -34,8 +34,10 @@ fn aes_openssl_rustcryptp() {
         let rust_aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::from_vec(aes_key_iv).unwrap();
         let openssl_enrypted = openssl_aes.encrypt_str_to_vec(&random_plaintext).unwrap();
         let rust_encrypted = rust_aes.encrypt_str_to_vec(&random_plaintext).unwrap();
-        let openssl_decrypted = openssl_aes.decrypt_bytes_to_string(rust_encrypted).unwrap();
-        let rust_decrypted = rust_aes.decrypt_bytes_to_string(openssl_enrypted).unwrap();
+        let openssl_decrypted = openssl_aes
+            .decrypt_bytes_to_string(&rust_encrypted)
+            .unwrap();
+        let rust_decrypted = rust_aes.decrypt_bytes_to_string(&openssl_enrypted).unwrap();
         assert_eq!(openssl_decrypted, rust_decrypted);
         if iterations > 1000 {
             break;
@@ -53,7 +55,7 @@ fn encrypt_aes_openssl() {
 #[test]
 fn decrypt_aes_openssl() {
     let aes = crate::aes::Aes256Cbc::<AesOpenSslScope>::from_key_iv(AES_KEY, AES_IV);
-    let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED.to_vec()).unwrap();
+    let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED).unwrap();
     assert_eq!(decrypted, PLAINTEXT)
 }
 
@@ -67,6 +69,6 @@ fn encrypt_aes_rustcrypto() {
 #[test]
 fn decrypt_aes_rustcrypto() {
     let aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::from_key_iv(AES_KEY, AES_IV);
-    let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED.to_vec()).unwrap();
+    let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED).unwrap();
     assert_eq!(decrypted, PLAINTEXT)
 }
