@@ -103,11 +103,11 @@ impl HybridCryptoFunctions for HybridCrypto {
         // this will result in a panic. Albeit it should not happen, since the
         // crate only loads keysizes of 2048 bits and above.
         let aes = Aes256Cbc::<AesRustCryptoScope>::random();
-        let base64_encrypted_key_iv = self
+        let encrypted_key_iv_b64 = self
             .rsa_keys
             .encrypt_bytes_pkcs1v15_padding_to_b64(&aes.key_iv_as_vec())?;
-        let payload = aes.encrypt_str_to_vec(plaintext_data)?.to_base64_encoded();
-        return Ok(format_args!("v1.{base64_encrypted_key_iv}.{payload}").to_string());
+        let encrypted_payload_b64 = aes.encrypt_str_to_vec(plaintext_data)?.to_base64_encoded();
+        return Ok(format_args!("v1.{encrypted_key_iv_b64}.{encrypted_payload_b64}").to_string());
     }
 
     /// Decrypt a hybrid encrypted and base64 encoded string slice.
