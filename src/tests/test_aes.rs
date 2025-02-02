@@ -27,7 +27,6 @@ fn aes_openssl_rustcryptp() {
             .take(plaintext_length + 1)
             .map(char::from)
             .collect();
-        println!("pt_len = {}", &plaintext_length);
         let openssl_aes = crate::aes::Aes256Cbc::<AesOpenSslScope>::random();
         // use same key and IV
         let aes_key_iv = openssl_aes.key_iv_as_vec();

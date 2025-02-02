@@ -98,10 +98,7 @@ impl RsaKeysFunctions for RsaKeys {
             .public_key
             .encrypt(&mut rng, Pkcs1v15Encrypt, unencrypted_bytes)
         {
-            Err(e) => {
-                println!("Could not rsa encrypt (public key) given value: {}", &e);
-                Err("Could not rsa encrypt given value".into())
-            }
+            Err(e) => Err(format!("Could not rsa encrypt given value: {}", &e).into()),
             Ok(buf) => Ok(buf),
         }
     }
@@ -136,8 +133,7 @@ impl RsaKeysFunctions for RsaKeys {
         let decrypted_data = match String::from_utf8(decrypted_bytes) {
             Ok(s) => s,
             Err(e) => {
-                println!("Could not convert decrypted data to utf8: {}", &e);
-                return Err("Could not convert decrypted data to utf8".into());
+                return Err(format!("Could not convert decrypted data to utf8: {}", &e).into());
             }
         };
         Ok(decrypted_data.trim_matches(char::from(0)).to_string())

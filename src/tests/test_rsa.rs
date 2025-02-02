@@ -89,7 +89,6 @@ fn rsa_sha512_signature_openssl_rustcrypto() {
             .take(plaintext_length + 1)
             .map(char::from)
             .collect();
-        // println!("{}", &random_plaintext);
         let openssl_signature_b64 = openssl_rsa_keys
             .sign_str_sha512_b64(&random_plaintext)
             .unwrap();
