@@ -15,6 +15,46 @@ static ENCRYPTED: &[u8] = &[
 ];
 
 #[test]
+fn aes_openssl_random() {
+    let openssl_aes = crate::aes::Aes256Cbc::<AesOpenSslScope>::random();
+    let mut iterations: usize = 0;
+    loop {
+        iterations += 1;
+        let random_openssl_aes_in_loop = crate::aes::Aes256Cbc::<AesOpenSslScope>::random();
+        // Those assertions may fail but it shouldn't happen too often!
+        assert_ne!(openssl_aes.iv(), random_openssl_aes_in_loop.iv());
+        assert_ne!(openssl_aes.key(), random_openssl_aes_in_loop.key());
+        assert_ne!(
+            openssl_aes.key_iv_as_vec(),
+            random_openssl_aes_in_loop.key_iv_as_vec()
+        );
+        if iterations > 1000 {
+            break;
+        }
+    }
+}
+
+#[test]
+fn aes_rustcrypto_random() {
+    let rustcrypto_aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::random();
+    let mut iterations: usize = 0;
+    loop {
+        iterations += 1;
+        let random_rustcrypto_aes_in_loop = crate::aes::Aes256Cbc::<AesOpenSslScope>::random();
+        // Those assertions may fail but it shouldn't happen too often!
+        assert_ne!(rustcrypto_aes.iv(), random_rustcrypto_aes_in_loop.iv());
+        assert_ne!(rustcrypto_aes.key(), random_rustcrypto_aes_in_loop.key());
+        assert_ne!(
+            rustcrypto_aes.key_iv_as_vec(),
+            random_rustcrypto_aes_in_loop.key_iv_as_vec()
+        );
+        if iterations > 1000 {
+            break;
+        }
+    }
+}
+
+#[test]
 fn aes_openssl_rustcryptp() {
     let mut iterations: usize = 0;
     // validate that both implementations prodvide equal results.
