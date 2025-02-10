@@ -14,6 +14,9 @@ pub enum HacaoiError {
     /// Collection of [`Error`]s from OpenSSL.
     #[cfg(feature = "openssl")]
     OpenSslErrorStack(openssl::error::ErrorStack),
+    /// Error from the Rust Crypto RSA crate.
+    #[cfg(feature = "rust-crypto")]
+    RsaError(rsa::Error),
     /// Plaintext error messages as [`String`]
     StringError(std::string::String),
     /// Errors that can occur while decoding bae64.
@@ -29,6 +32,8 @@ impl std::fmt::Display for HacaoiError {
             HacaoiError::Utf8Error(e) => write!(f, "{}", e),
             #[cfg(feature = "openssl")]
             HacaoiError::OpenSslErrorStack(e) => write!(f, "{:?}", e),
+            #[cfg(feature = "openssl")]
+            HacaoiError::RsaError(e) => write!(f, "{}", e),
             HacaoiError::StringError(e) => write!(f, "{}", e),
             #[cfg(feature = "b64")]
             HacaoiError::Base64DecodeError(e) => write!(f, "{}", e),
@@ -61,6 +66,13 @@ impl From<std::str::Utf8Error> for HacaoiError {
 impl From<openssl::error::ErrorStack> for HacaoiError {
     fn from(err: openssl::error::ErrorStack) -> Self {
         HacaoiError::OpenSslErrorStack(err)
+    }
+}
+
+#[cfg(feature = "rust-crypto")]
+impl From<rsa::Error> for HacaoiError {
+    fn from(err: rsa::Error) -> Self {
+        HacaoiError::RsaError(err)
     }
 }
 

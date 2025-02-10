@@ -54,7 +54,7 @@ pub trait Base64VecU8Conversions {
 
 impl Base64VecU8Conversions for Vec<u8> {
     fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, base64::DecodeError> {
-        Ok(base64::engine::general_purpose::STANDARD.decode(b64)?)
+        base64::engine::general_purpose::STANDARD.decode(b64)
     }
 
     fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError> {

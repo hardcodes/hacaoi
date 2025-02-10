@@ -37,7 +37,6 @@ use crate::error::HacaoiError;
 use crate::hybrid_crypto::HybridCryptoFunctions;
 use crate::openssl::rsa::RsaKeys;
 use crate::rsa::RsaKeysFunctions;
-use std::error::Error;
 use std::path::Path;
 
 /// The [`HybridCrypto`] struct is used to encrypt and
@@ -70,7 +69,7 @@ impl HybridCryptoFunctions for HybridCrypto {
     fn from_file<P: AsRef<Path>>(
         rsa_private_key_path: P,
         rsa_private_key_password: &str,
-    ) -> Result<Self, Box<dyn Error>> {
+    ) -> Result<Self, HacaoiError> {
         let rsa_keys = RsaKeys::from_file(rsa_private_key_path, rsa_private_key_password)?;
         Ok(HybridCrypto { rsa_keys })
     }
@@ -80,7 +79,7 @@ impl HybridCryptoFunctions for HybridCrypto {
     /// derived from the private key.
     /// This may be useful for application runtime
     /// data encryption/decryption.
-    fn random(key_size: crate::rsa::KeySize) -> Result<Self, Box<dyn Error>>
+    fn random(key_size: crate::rsa::KeySize) -> Result<Self, HacaoiError>
     where
         Self: Sized,
     {
@@ -101,7 +100,7 @@ impl HybridCryptoFunctions for HybridCrypto {
     ///
     ///    For now only version `v1` exists.
     #[inline(always)]
-    fn hybrid_encrypt_str(&self, plaintext_data: &str) -> Result<String, Box<dyn Error>> {
+    fn hybrid_encrypt_str(&self, plaintext_data: &str) -> Result<String, HacaoiError> {
         // AES Keys to encrypt the payload - the keysize of 256bit can be
         // encrypted using a 2048 RSA key. A smaller key size makes no sense and
         // this will result in a panic. Albeit it should not happen, since the

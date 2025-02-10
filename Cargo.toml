@@ -1,7 +1,7 @@
 [package]
 name = "hacaoi"
 description = "HaCaOI - Hades Cap Of Invisibilty - a facade rust crate for encryption and decryption"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["Sven Putze <github@hardcodes.de>"]
 readme = "README.md"
