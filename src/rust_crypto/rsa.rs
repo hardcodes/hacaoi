@@ -16,6 +16,7 @@
 //! }
 //! ```
 
+use crate::error::HacaoiError;
 use crate::rsa::{KeySize, RsaKeysFunctions};
 use rsa::pkcs1v15::SigningKey;
 use rsa::pkcs8;
@@ -114,7 +115,7 @@ impl RsaKeysFunctions for RsaKeys {
     fn decrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<Vec<u8>, Box<dyn Error>> {
+    ) -> Result<Vec<u8>, HacaoiError> {
         match self.private_key.decrypt(Pkcs1v15Encrypt, encrypted_bytes) {
             Err(e) => Err(format!("Could not rsa decrypt given value: {}", &e).into()),
             Ok(buf) => Ok(buf),
@@ -128,12 +129,12 @@ impl RsaKeysFunctions for RsaKeys {
     fn decrypt_bytes_pkcs1v15_padding_to_string(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, HacaoiError> {
         let decrypted_bytes = self.decrypt_bytes_pkcs1v15_padding_to_vec(encrypted_bytes)?;
         let decrypted_data = match String::from_utf8(decrypted_bytes) {
             Ok(s) => s,
             Err(e) => {
-                return Err(format!("Could not convert decrypted data to utf8: {}", &e).into());
+                return Err(HacaoiError::FromUtf8Error(e));
             }
         };
         Ok(decrypted_data.trim_matches(char::from(0)).to_string())

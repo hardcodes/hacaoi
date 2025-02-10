@@ -22,7 +22,6 @@
 use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesOpenSslScope};
 use crate::error::HacaoiError;
 use openssl::symm::{decrypt, encrypt, Cipher};
-use std::error::Error;
 
 impl Aes256CbcFunctions<AesOpenSslScope> for Aes256Cbc<AesOpenSslScope> {
     /// Encrypt the given plaintext using Aes 256 CBC
@@ -38,7 +37,7 @@ impl Aes256CbcFunctions<AesOpenSslScope> for Aes256Cbc<AesOpenSslScope> {
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
     #[inline(always)]
-    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>> {
+    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, HacaoiError> {
         let cipher = Cipher::aes_256_cbc();
         let decrypted_payload = decrypt(cipher, &self.key(), Some(&self.iv()), encrypted_bytes)?;
         return Ok(String::from_utf8(decrypted_payload)?

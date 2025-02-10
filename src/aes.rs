@@ -1,6 +1,5 @@
 use crate::error::HacaoiError;
 use rand::RngCore;
-use std::error::Error;
 use std::marker::PhantomData;
 use zeroize::Zeroize;
 
@@ -20,7 +19,7 @@ pub trait Aes256CbcFunctions<Scope> {
     fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>;
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
-    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>>;
+    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, HacaoiError>;
 }
 
 /// Used to encrypt or decrypt data using AES 256 in CBC mode.
@@ -58,13 +57,15 @@ impl<Scope> Aes256Cbc<Scope> {
     /// concatenated key and IV values and return the result
     /// as `Aes256Cbc` struct.
     #[inline(always)]
-    pub fn from_vec<T>(aes_key_iv: T) -> Result<Self, Box<dyn Error>>
+    pub fn from_vec<T>(aes_key_iv: T) -> Result<Self, HacaoiError>
     where
         T: Into<Vec<u8>>,
     {
         let mut aes_key_iv_vec_u8: Vec<u8> = aes_key_iv.into();
         if 48 != aes_key_iv_vec_u8.len() {
-            return Err("wrong length of Vec<u8> containing aes key and IV".into());
+            return Err(HacaoiError::StringError(
+                "wrong length of Vec<u8> containing aes key and IV".into(),
+            ));
         }
         let mut aes_key: [u8; 32] = [0; 32];
         let mut aes_iv = [0; 16];

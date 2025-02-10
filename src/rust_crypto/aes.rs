@@ -22,7 +22,6 @@
 use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesRustCryptoScope};
 use crate::error::HacaoiError;
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
-use std::error::Error;
 
 type Aes256CbcEnc = cbc::Encryptor<aes::Aes256Enc>;
 type Aes256CbcDec = cbc::Decryptor<aes::Aes256Dec>;
@@ -60,7 +59,7 @@ impl Aes256CbcFunctions<AesRustCryptoScope> for Aes256Cbc<AesRustCryptoScope> {
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
     #[inline(always)]
-    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>> {
+    fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, HacaoiError> {
         let aes256_decryptor = Aes256CbcDec::new(&self.key().into(), &self.iv().into());
         let mut encrypted_bytes_vec = encrypted_bytes.to_vec();
         let decrypted_payload =

@@ -33,6 +33,7 @@
 use crate::base64_trait::{Base64StringConversions, Base64VecU8Conversions};
 
 use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesOpenSslScope};
+use crate::error::HacaoiError;
 use crate::hybrid_crypto::HybridCryptoFunctions;
 use crate::openssl::rsa::RsaKeys;
 use crate::rsa::RsaKeysFunctions;
@@ -124,7 +125,7 @@ impl HybridCryptoFunctions for HybridCrypto {
     /// 3. Use AES 256 key and IV to decrypt the AES 256 CBC encrypted payload
     /// 4. return plaintext String
     #[inline(always)]
-    fn hybrid_decrypt_str(&self, hybrid_encrypted_data: &str) -> Result<String, Box<dyn Error>> {
+    fn hybrid_decrypt_str(&self, hybrid_encrypted_data: &str) -> Result<String, HacaoiError> {
         let elements: Vec<&str> = hybrid_encrypted_data.split('.').collect();
 
         if elements.len() != 3 {
@@ -143,7 +144,7 @@ impl HybridCryptoFunctions for HybridCrypto {
             .rsa_keys
             .decrypt_bytes_pkcs1v15_padding_to_vec(&encrypted_key_iv)?;
         if aes_key_iv.len() < 48 {
-            return Err("Key and IV too short".into());
+            return Err(HacaoiError::StringError("Key and IV too short".into()));
         }
         let aes = Aes256Cbc::<AesOpenSslScope>::from_vec(&aes_key_iv[0..48])?;
 
@@ -159,7 +160,7 @@ impl HybridCryptoFunctions for HybridCrypto {
     ///
     /// - `encrypted_data`: a String slice with data to decrypt
     #[inline(always)]
-    fn decrypt_str(&self, encrypted_data: &str) -> Result<String, Box<dyn Error>> {
+    fn decrypt_str(&self, encrypted_data: &str) -> Result<String, HacaoiError> {
         if encrypted_data.find('.').is_none() {
             self.rsa_keys
                 .decrypt_b64_pkcs1v15_padding_to_string(encrypted_data)

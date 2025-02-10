@@ -4,7 +4,8 @@ use base64::{
     Engine as _,
 };
 use core::convert::AsRef;
-use std::error::Error;
+
+use crate::error::HacaoiError;
 
 /// This trait simplifies the use of the base64 string endoding
 /// functions and make them testable so that future changes
@@ -45,18 +46,18 @@ where
 #[allow(dead_code)]
 pub trait Base64VecU8Conversions {
     /// convert a base64 encoded string slice to a plaintext `Vec<u8>`.
-    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, Box<dyn Error>>;
+    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, base64::DecodeError>;
 
     /// convert a url safe base64 encoded string slice to a plaintext `Vec<u8>`.
-    fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, Box<dyn Error>>;
+    fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError>;
 }
 
 impl Base64VecU8Conversions for Vec<u8> {
-    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, base64::DecodeError> {
         Ok(base64::engine::general_purpose::STANDARD.decode(b64)?)
     }
 
-    fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError> {
         const CUSTOM_ENGINE: engine::GeneralPurpose =
             engine::GeneralPurpose::new(&alphabet::URL_SAFE, general_purpose::PAD);
 

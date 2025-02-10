@@ -1,3 +1,4 @@
+use crate::error::HacaoiError;
 use crate::rsa::KeySize;
 use std::error::Error;
 use std::path::Path;
@@ -51,7 +52,7 @@ pub trait HybridCryptoFunctions {
     /// 2. Decrypt the AES 256 key and IV
     /// 3. Use AES 256 key and IV to decrypt the AES 256 CBC encrypted payload
     /// 4. return plaintext String
-    fn hybrid_decrypt_str(&self, hybrid_encrypted_data: &str) -> Result<String, Box<dyn Error>>
+    fn hybrid_decrypt_str(&self, hybrid_encrypted_data: &str) -> Result<String, HacaoiError>
     where
         Self: Sized;
 
@@ -63,7 +64,7 @@ pub trait HybridCryptoFunctions {
     /// # Arguments
     ///
     /// - `encrypted_data`: a String slice with data to decrypt
-    fn decrypt_str(&self, encrypted_data: &str) -> Result<String, Box<dyn Error>>
+    fn decrypt_str(&self, encrypted_data: &str) -> Result<String, HacaoiError>
     where
         Self: Sized;
 }

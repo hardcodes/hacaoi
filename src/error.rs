@@ -8,11 +8,17 @@ pub enum HacaoiError {
     IoError(std::io::Error),
     /// A possible error value when converting a `String` from a UTF-8 byte vector.
     FromUtf8Error(std::string::FromUtf8Error),
+    /// Errors which can occur when attempting to interpret a sequence of [`u8`]
+    /// as a string.
+    Utf8Error(std::str::Utf8Error),
     /// Collection of [`Error`]s from OpenSSL.
-    /// #[cfg(feature = "openssl")]
+    #[cfg(feature = "openssl")]
     OpenSslErrorStack(openssl::error::ErrorStack),
     /// Plaintext error messages as [`String`]
     StringError(std::string::String),
+    /// Errors that can occur while decoding bae64.
+    #[cfg(feature = "b64")]
+    Base64DecodeError(base64::DecodeError),
 }
 
 impl std::fmt::Display for HacaoiError {
@@ -20,9 +26,12 @@ impl std::fmt::Display for HacaoiError {
         match self {
             HacaoiError::IoError(e) => write!(f, "{}", e),
             HacaoiError::FromUtf8Error(e) => write!(f, "{}", e),
+            HacaoiError::Utf8Error(e) => write!(f, "{}", e),
             #[cfg(feature = "openssl")]
             HacaoiError::OpenSslErrorStack(e) => write!(f, "{:?}", e),
             HacaoiError::StringError(e) => write!(f, "{}", e),
+            #[cfg(feature = "b64")]
+            HacaoiError::Base64DecodeError(e) => write!(f, "{}", e),
         }
     }
 }
@@ -42,6 +51,12 @@ impl From<std::string::FromUtf8Error> for HacaoiError {
     }
 }
 
+impl From<std::str::Utf8Error> for HacaoiError {
+    fn from(err: std::str::Utf8Error) -> Self {
+        HacaoiError::Utf8Error(err)
+    }
+}
+
 #[cfg(feature = "openssl")]
 impl From<openssl::error::ErrorStack> for HacaoiError {
     fn from(err: openssl::error::ErrorStack) -> Self {
@@ -52,5 +67,12 @@ impl From<openssl::error::ErrorStack> for HacaoiError {
 impl From<std::string::String> for HacaoiError {
     fn from(err: std::string::String) -> Self {
         HacaoiError::StringError(err)
+    }
+}
+
+#[cfg(feature = "b64")]
+impl From<base64::DecodeError> for HacaoiError {
+    fn from(err: base64::DecodeError) -> Self {
+        HacaoiError::Base64DecodeError(err)
     }
 }

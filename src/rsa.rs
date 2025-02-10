@@ -1,5 +1,6 @@
 #[cfg(feature = "b64")]
 use crate::base64_trait::{Base64StringConversions, Base64VecU8Conversions};
+use crate::error::HacaoiError;
 use std::error::Error;
 use std::path::Path;
 
@@ -93,7 +94,7 @@ pub trait RsaKeysFunctions {
     fn decrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<Vec<u8>, Box<dyn Error>>
+    ) -> Result<Vec<u8>, HacaoiError>
     where
         Self: Sized;
 
@@ -103,7 +104,7 @@ pub trait RsaKeysFunctions {
     fn decrypt_bytes_pkcs1v15_padding_to_string(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<String, Box<dyn Error>>
+    ) -> Result<String, HacaoiError>
     where
         Self: Sized;
 
@@ -115,14 +116,14 @@ pub trait RsaKeysFunctions {
     fn decrypt_b64_pkcs1v15_padding_to_vec(
         &self,
         encrypted_b64_data: &str,
-    ) -> Result<Vec<u8>, Box<dyn Error>>
+    ) -> Result<Vec<u8>, HacaoiError>
     where
         Self: Sized,
     {
         let raw_encrypted_data = match Vec::from_base64_encoded(encrypted_b64_data) {
             Ok(b) => b,
             Err(e) => {
-                return Err(format!("Could not base64 decode value: {}", &e).into());
+                return Err(HacaoiError::Base64DecodeError(e));
             }
         };
         self.decrypt_bytes_pkcs1v15_padding_to_vec(&raw_encrypted_data)
@@ -136,7 +137,7 @@ pub trait RsaKeysFunctions {
     fn decrypt_b64_pkcs1v15_padding_to_string(
         &self,
         encrypted_b64_data: &str,
-    ) -> Result<String, Box<dyn Error>>
+    ) -> Result<String, HacaoiError>
     where
         Self: Sized,
     {
