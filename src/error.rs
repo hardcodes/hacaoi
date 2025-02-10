@@ -3,23 +3,23 @@
 /// to avoid anyhow (nothing bad about it).
 #[derive(Debug)]
 pub enum HacaoiError {
-    /// The error type for I/O operations of the [`Read`], [`Write`], [`Seek`], and
+    /// [`Error`](std::io::Error) for I/O operations of the [`Read`](std::io::Read), [`Write`](std::io::Write), [`Seek`](std::io::Seek), and
     /// associated traits.
     IoError(std::io::Error),
-    /// A possible error value when converting a `String` from a UTF-8 byte vector.
+    /// Possible [`FromUtf8Error`](std::string::FromUtf8Error)s when converting a `String` from a UTF-8 byte vector.
     FromUtf8Error(std::string::FromUtf8Error),
-    /// Errors which can occur when attempting to interpret a sequence of [`u8`]
+    /// [`Utf8Error`](std::str::Utf8Error)s which can occur when attempting to interpret a sequence of [`u8`]
     /// as a string.
     Utf8Error(std::str::Utf8Error),
-    /// Collection of [`Error`]s from OpenSSL.
+    /// Collection of [`Error`](openssl::error::Error)s from OpenSSL.
     #[cfg(feature = "openssl")]
     OpenSslErrorStack(openssl::error::ErrorStack),
-    /// Error from the Rust Crypto RSA crate.
+    /// [`Error`](rsa::Error) from the Rust Crypto RSA crate.
     #[cfg(feature = "rust-crypto")]
     RsaError(rsa::Error),
     /// Plaintext error messages as [`String`]
     StringError(std::string::String),
-    /// Errors that can occur while decoding bae64.
+    /// [`DecodeError`](base64::DecodeError)s that can occur while decoding bae64.
     #[cfg(feature = "b64")]
     Base64DecodeError(base64::DecodeError),
 }

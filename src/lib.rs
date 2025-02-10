@@ -106,7 +106,7 @@ pub mod aes;
 /// conversions for the [openssl] and [rust_crypto] modules.
 #[cfg(feature = "b64")]
 pub mod base64_trait;
-/// Combines all error types from other crates to ease
+/// Combines all error types from `use`d crates to ease
 /// error propagation.
 pub mod error;
 /// Trait for hybrid encryption/decryption using AES and RSA functions.
