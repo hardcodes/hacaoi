@@ -1,3 +1,4 @@
+use crate::error::HacaoiError;
 use rand::RngCore;
 use std::error::Error;
 use std::marker::PhantomData;
@@ -16,7 +17,7 @@ pub trait Aes256CbcFunctions<Scope> {
     /// Encrypt the given plaintext using Aes 256 CBC
     /// with PKCS#5 padding  and return the result as
     /// `Vec<u8>`.
-    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, Box<dyn Error>>;
+    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>;
     /// Decrypt the data inside a `Vec<u8>` and return the
     /// plaintext as `String`.
     fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, Box<dyn Error>>;

@@ -20,6 +20,7 @@
 //! ```
 
 use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesOpenSslScope};
+use crate::error::HacaoiError;
 use openssl::symm::{decrypt, encrypt, Cipher};
 use std::error::Error;
 
@@ -28,7 +29,7 @@ impl Aes256CbcFunctions<AesOpenSslScope> for Aes256Cbc<AesOpenSslScope> {
     /// with PKCS#5 padding  and return the result as
     /// `Vec<u8>`.
     #[inline(always)]
-    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError> {
         let cipher = Cipher::aes_256_cbc();
         let ciphertext = encrypt(cipher, &self.key(), Some(&self.iv()), plaintext.as_bytes())?;
         Ok(ciphertext)

@@ -20,6 +20,7 @@
 //! ```
 
 use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesRustCryptoScope};
+use crate::error::HacaoiError;
 use aes::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use std::error::Error;
 
@@ -37,7 +38,7 @@ impl Aes256CbcFunctions<AesRustCryptoScope> for Aes256Cbc<AesRustCryptoScope> {
     /// Taken from wikipedia, see
     /// <https://en.wikipedia.org/wiki/Padding_(cryptography)>
     #[inline(always)]
-    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError> {
         let plaintext_len = plaintext.len();
         // message block length = 128 bits = 16 bytes
         let padding_len = 16 - plaintext_len % 16;
