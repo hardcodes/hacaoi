@@ -8,6 +8,115 @@ const MIN_PLAINTEXT_LENGTH: usize = 14;
 const MAX_PLAINTEXT_LENGTH: usize = 8192;
 // (insecure) password of the rsa private keys in resources/tests/rsa
 const RSA_PASSPHRASE: &str = "12345678901234";
+const PLAINTEXT: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+
+#[test]
+fn rsa_pkcs1v15_openssl_random_1024bit() {
+    let openssl_rsa_keys =
+        crate::openssl::rsa::RsaKeys::random(crate::rsa::KeySize::Bit1024).unwrap();
+    let openssl_rsa_encrypted_b64 = openssl_rsa_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = openssl_rsa_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&openssl_rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
+}
+
+#[test]
+fn rsa_pkcs1v15_rustcrypto_random_1024bit() {
+    let rust_crypto_keys =
+        crate::rust_crypto::rsa::RsaKeys::random(crate::rsa::KeySize::Bit1024).unwrap();
+
+    let rust_crypto_encrypted_b64 = rust_crypto_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &rust_crypto_decryped);
+}
+
+#[test]
+fn rsa_pkcs1v15_openssl_random_2048bit() {
+    let openssl_rsa_keys =
+        crate::openssl::rsa::RsaKeys::random(crate::rsa::KeySize::Bit2048).unwrap();
+    let openssl_rsa_encrypted_b64 = openssl_rsa_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = openssl_rsa_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&openssl_rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
+}
+
+#[test]
+fn rsa_pkcs1v15_rustcrypto_random_2048bit() {
+    let rust_crypto_keys =
+        crate::rust_crypto::rsa::RsaKeys::random(crate::rsa::KeySize::Bit2048).unwrap();
+
+    let rust_crypto_encrypted_b64 = rust_crypto_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &rust_crypto_decryped);
+}
+
+#[test]
+fn rsa_pkcs1v15_openssl_random_3072bit() {
+    let openssl_rsa_keys =
+        crate::openssl::rsa::RsaKeys::random(crate::rsa::KeySize::Bit3072).unwrap();
+    let openssl_rsa_encrypted_b64 = openssl_rsa_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = openssl_rsa_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&openssl_rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
+}
+
+#[test]
+fn rsa_pkcs1v15_rustcrypto_random_3072bit() {
+    let rust_crypto_keys =
+        crate::rust_crypto::rsa::RsaKeys::random(crate::rsa::KeySize::Bit3072).unwrap();
+
+    let rust_crypto_encrypted_b64 = rust_crypto_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &rust_crypto_decryped);
+}
+
+#[test]
+fn rsa_pkcs1v15_openssl_random_4096bit() {
+    let openssl_rsa_keys =
+        crate::openssl::rsa::RsaKeys::random(crate::rsa::KeySize::Bit4096).unwrap();
+    let openssl_rsa_encrypted_b64 = openssl_rsa_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = openssl_rsa_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&openssl_rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
+}
+
+#[test]
+fn rsa_pkcs1v15_rustcrypto_random_4096bit() {
+    let rust_crypto_keys =
+        crate::rust_crypto::rsa::RsaKeys::random(crate::rsa::KeySize::Bit4096).unwrap();
+
+    let rust_crypto_encrypted_b64 = rust_crypto_keys
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &rust_crypto_decryped);
+}
 
 #[test]
 fn rsa_pkcs1v15_openssl_rustcrypto() {

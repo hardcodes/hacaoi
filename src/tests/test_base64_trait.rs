@@ -14,7 +14,7 @@ fn base64_encoding_decoding() {
     let plain_u8 = match Vec::from_base64_encoded(&base64) {
         Ok(s) => s,
         Err(e) => {
-            panic!("can not decode base64 encoded string slice: {}", &e);
+            panic!("cannot decode base64 encoded string slice: {}", &e);
         }
     };
     let plaintext = String::from_utf8(plain_u8).unwrap();
@@ -27,7 +27,7 @@ fn base64_encoding_decoding() {
     let plain_u8 = match Vec::from_base64_encoded(&base64) {
         Ok(s) => s,
         Err(e) => {
-            panic!("can not decode base64 encoded string slice: {}", &e);
+            panic!("cannot decode base64 encoded string slice: {}", &e);
         }
     };
     let plaintext = String::from_utf8(plain_u8).unwrap();
@@ -52,10 +52,7 @@ fn base64_encoding_decoding() {
     let plain_u8_urlsafe = match Vec::from_base64_urlsafe_encoded(&base64_urlsafe) {
         Ok(s) => s,
         Err(e) => {
-            panic!(
-                "can not decode url safe base64 encoded string slice: {}",
-                &e
-            );
+            panic!("cannot decode url safe base64 encoded string slice: {}", &e);
         }
     };
     let plaintext_urlsafe = String::from_utf8(plain_u8_urlsafe).unwrap();

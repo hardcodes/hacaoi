@@ -60,12 +60,12 @@
 //! }
 //! ```
 
+use crate::error::HacaoiError;
 use crate::rsa::{KeySize, RsaKeysFunctions};
 use openssl::hash::MessageDigest;
 use openssl::pkey::PKey;
 use openssl::rsa::{Padding, Rsa};
 use openssl::sign::{Signer, Verifier};
-use std::error::Error;
 use std::path::Path;
 
 // min bit size of the modulus (modulus * 8 = rsa key bits)
@@ -81,7 +81,7 @@ pub struct RsaKeys {
 impl RsaKeysFunctions for RsaKeys {
     /// Build a new random RSA key pair.
     #[inline(always)]
-    fn random(key_size: KeySize) -> Result<Self, Box<dyn Error>> {
+    fn random(key_size: KeySize) -> Result<Self, HacaoiError> {
         let rsa = Rsa::generate(key_size as u32)?;
         let rsa_public_key = Rsa::public_key_from_pem(&rsa.public_key_to_pem()?)?;
         let rsa_private_key = Rsa::private_key_from_pem(&rsa.private_key_to_pem()?)?;
@@ -98,7 +98,7 @@ impl RsaKeysFunctions for RsaKeys {
     fn from_file<P: AsRef<Path>>(
         rsa_private_key_path: P,
         rsa_private_key_password: &str,
-    ) -> Result<Self, Box<dyn Error>> {
+    ) -> Result<Self, HacaoiError> {
         let rsa_private_key_file = std::fs::read_to_string(rsa_private_key_path)?;
         let rsa_private_key = match Rsa::private_key_from_pem_passphrase(
             rsa_private_key_file.as_bytes(),
@@ -130,7 +130,7 @@ impl RsaKeysFunctions for RsaKeys {
     fn encrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
         unencrypted_bytes: &[u8],
-    ) -> Result<Vec<u8>, Box<dyn Error>> {
+    ) -> Result<Vec<u8>, HacaoiError> {
         let public_key = self.public_key.as_ref();
         let mut buf: Vec<u8> = vec![0; public_key.size() as usize];
         match public_key.public_encrypt(unencrypted_bytes, &mut buf, Padding::PKCS1) {
@@ -150,7 +150,7 @@ impl RsaKeysFunctions for RsaKeys {
     fn decrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<Vec<u8>, Box<dyn Error>> {
+    ) -> Result<Vec<u8>, HacaoiError> {
         let private_key = self.private_key.as_ref();
         let mut buf: Vec<u8> = vec![0; private_key.size() as usize];
         match private_key.private_decrypt(encrypted_bytes, &mut buf, Padding::PKCS1) {
@@ -166,12 +166,12 @@ impl RsaKeysFunctions for RsaKeys {
     fn decrypt_bytes_pkcs1v15_padding_to_string(
         &self,
         encrypted_bytes: &[u8],
-    ) -> Result<String, Box<dyn Error>> {
+    ) -> Result<String, HacaoiError> {
         let decrypted_bytes = self.decrypt_bytes_pkcs1v15_padding_to_vec(encrypted_bytes)?;
         let decrypted_data = match String::from_utf8(decrypted_bytes) {
             Ok(s) => s,
             Err(e) => {
-                return Err(format!("Could not convert decrypted data to utf8: {}", &e).into());
+                return Err(HacaoiError::FromUtf8Error(e));
             }
         };
         Ok(decrypted_data.trim_matches(char::from(0)).to_string())
@@ -184,7 +184,7 @@ impl RsaKeysFunctions for RsaKeys {
     /// Create a sha512 signature for the given
     /// string slice using the rsa private key.
     #[inline(always)]
-    fn sign_str_sha512(&self, data_to_sign: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    fn sign_str_sha512(&self, data_to_sign: &str) -> Result<Vec<u8>, HacaoiError> {
         let pkey = match PKey::from_rsa(self.private_key.clone()) {
             Ok(pkey) => pkey,
             Err(e) => {
@@ -218,7 +218,7 @@ impl RsaKeysFunctions for RsaKeys {
         &self,
         signed_data: &str,
         signature_bytes: &[u8],
-    ) -> Result<(), Box<dyn Error>> {
+    ) -> Result<(), HacaoiError> {
         let pkey = match PKey::from_rsa(self.public_key.clone()) {
             Ok(pkey) => pkey,
             Err(e) => {
@@ -248,6 +248,6 @@ impl RsaKeysFunctions for RsaKeys {
         if validation_result {
             return Ok(());
         }
-        Err("invalid signature".into())
+        Err(HacaoiError::StringError("invalid signature".into()))
     }
 }

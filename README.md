@@ -26,6 +26,10 @@ It turned out not to be as easy as expected, since the documentation of the Rust
 Going from openssl command line tools to use the openssl library via rust openssl crate bindungs was easy. Going from rust openssl crate to RustCrypto was hard. At least for yours truly and his small dumb brain.
 
 
+# Honorable mention
+
+Thanks to [Matthias Bläsing](https://github.com/matthiasblaesing), who implemented the hybrid encryption functions for [lmtyas](https://github.com/hardcodes/lmtyas), which were reused and refactored here.
+
 ------
 
 # License
