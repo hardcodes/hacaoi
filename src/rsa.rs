@@ -4,7 +4,7 @@ use crate::error::HacaoiError;
 use std::path::Path;
 
 /// Valid key size in bits used for random rsa private key creation.
-/// 
+///
 /// ⚠️ **Security Warning**: A key size smaller than 2048 bits is insecure
 /// as of the year 2025. Even 2048 is questionable. Use 4096 if possible.
 pub enum KeySize {
@@ -119,12 +119,7 @@ pub trait RsaKeysFunctions {
     where
         Self: Sized,
     {
-        let raw_encrypted_data = match Vec::from_base64_encoded(encrypted_b64_data) {
-            Ok(b) => b,
-            Err(e) => {
-                return Err(HacaoiError::Base64DecodeError(e));
-            }
-        };
+        let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
         self.decrypt_bytes_pkcs1v15_padding_to_vec(&raw_encrypted_data)
     }
 
@@ -140,12 +135,7 @@ pub trait RsaKeysFunctions {
     where
         Self: Sized,
     {
-        let raw_encrypted_data = match Vec::from_base64_encoded(encrypted_b64_data) {
-            Ok(b) => b,
-            Err(e) => {
-                return Err(format!("Could not base64 decode value: {}", &e).into());
-            }
-        };
+        let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
         self.decrypt_bytes_pkcs1v15_padding_to_string(&raw_encrypted_data)
     }
 
@@ -192,12 +182,7 @@ pub trait RsaKeysFunctions {
     where
         Self: Sized,
     {
-        let signature_bytes = match Vec::from_base64_encoded(signature_b64) {
-            Ok(bytes) => bytes,
-            Err(e) => {
-                return Err(format!("Could not base64 decode signature: {}", &e).into());
-            }
-        };
+        let signature_bytes = Vec::from_base64_encoded(signature_b64)?;
         self.validate_sha512_bytes_signature(signed_data, &signature_bytes)
     }
 }

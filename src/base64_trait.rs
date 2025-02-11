@@ -46,15 +46,15 @@ where
 #[allow(dead_code)]
 pub trait Base64VecU8Conversions {
     /// convert a base64 encoded string slice to a plaintext `Vec<u8>`.
-    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, base64::DecodeError>;
+    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError>;
 
     /// convert a url safe base64 encoded string slice to a plaintext `Vec<u8>`.
     fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError>;
 }
 
 impl Base64VecU8Conversions for Vec<u8> {
-    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, base64::DecodeError> {
-        base64::engine::general_purpose::STANDARD.decode(b64)
+    fn from_base64_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError> {
+        Ok(base64::engine::general_purpose::STANDARD.decode(b64)?)
     }
 
     fn from_base64_urlsafe_encoded(b64: &str) -> Result<Vec<u8>, HacaoiError> {
