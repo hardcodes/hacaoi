@@ -4,9 +4,12 @@ use crate::error::HacaoiError;
 use std::path::Path;
 
 /// Valid key size in bits used for random rsa private key creation.
-/// A key size smaller than 2048 bits is insecure as of the year 2025.
-/// Even 2048 is questionable. Use 4096 if possible.
+/// 
+/// ⚠️ **Security Warning**: A key size smaller than 2048 bits is insecure
+/// as of the year 2025. Even 2048 is questionable. Use 4096 if possible.
 pub enum KeySize {
+    /// Key size of 1024 bits (⚠️ **Security Warning**: use only if you know what you are doing!)
+    Bit1024 = 1024,
     /// Key size of 2048 bits
     Bit2048 = 2048,
     /// Key size of 3072 bits
