@@ -32,7 +32,7 @@ impl std::fmt::Display for HacaoiError {
             HacaoiError::Utf8Error(e) => write!(f, "{}", e),
             #[cfg(feature = "openssl")]
             HacaoiError::OpenSslErrorStack(e) => write!(f, "{:?}", e),
-            #[cfg(feature = "openssl")]
+            #[cfg(feature = "rust-crypto")]
             HacaoiError::RsaError(e) => write!(f, "{}", e),
             HacaoiError::StringError(e) => write!(f, "{}", e),
             #[cfg(feature = "b64")]
