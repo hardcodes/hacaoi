@@ -1,3 +1,7 @@
+#[cfg(feature = "b64")]
+use crate::base64_trait::Base64StringConversions;
+#[cfg(feature = "b64")]
+use crate::base64_trait::Base64VecU8Conversions;
 use crate::error::HacaoiError;
 use rand::RngCore;
 use std::marker::PhantomData;
@@ -18,8 +22,26 @@ pub trait Aes256CbcFunctions<Scope> {
     /// `Vec<u8>`.
     fn encrypt_str_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>;
     /// Decrypt the data inside a `Vec<u8>` and return the
-    /// plaintext as `String`.
+    /// plaintext as [`String`].
     fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, HacaoiError>;
+    /// Encrypt the given plaintext using Aes 256 CBC
+    /// with PKCS#5 padding  and return the result as
+    /// url safe base64 encoded [`String`].
+    #[cfg(feature = "b64")]
+    #[inline(always)]
+    fn encrypt_str_to_b64(&self, plaintext: &str) -> Result<String, HacaoiError> {
+        let encrypted_vec = self.encrypt_str_to_vec(plaintext)?;
+        Ok(encrypted_vec.to_base64_urlsafe_encoded())
+    }
+    /// Decrypt the url safe base64 encoded data and return the
+    /// plaintext as [`String`].
+    #[cfg(feature = "b64")]
+    #[inline(always)]
+    fn decrypt_b64_to_string(&self, encrypted_b64: &str) -> Result<String, HacaoiError> {
+        let encrypted_bytes =
+            Vec::from_base64_urlsafe_encoded(encrypted_b64.trim_matches(char::from(0)))?;
+        self.decrypt_bytes_to_string(&encrypted_bytes)
+    }
 }
 
 /// Used to encrypt or decrypt data using AES 256 in CBC mode.

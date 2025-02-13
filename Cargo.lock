@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "hacaoi"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "aes",
  "base64",

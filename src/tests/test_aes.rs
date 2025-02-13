@@ -13,6 +13,8 @@ static ENCRYPTED: &[u8] = &[
     113, 165, 30, 211, 170, 0, 207, 200, 177, 82, 62, 37, 104, 113, 15, 105, 67, 35, 195, 121, 100,
     207, 18, 11, 166,
 ];
+const ENCRYPTED_B64: &str =
+    "t4--W4_r2Ku_I3sAAjVz4i3Mqei3c9HrrNr_Y8r_kkufHrLXooV8caUe06oAz8ixUj4laHEPaUMjw3lkzxILpg==";
 
 #[test]
 fn aes_openssl_random() {
@@ -88,26 +90,50 @@ fn aes_openssl_rustcryptp() {
 fn encrypt_aes_openssl() {
     let aes = crate::aes::Aes256Cbc::<AesOpenSslScope>::from_key_iv(AES_KEY, AES_IV);
     let enrypted = aes.encrypt_str_to_vec(PLAINTEXT).unwrap();
-    assert_eq!(enrypted, ENCRYPTED)
+    assert_eq!(enrypted, ENCRYPTED);
+
+    #[cfg(feature = "b64")]
+    {
+        let encrypted_b64 = aes.encrypt_str_to_b64(PLAINTEXT).unwrap();
+        assert_eq!(encrypted_b64, ENCRYPTED_B64);
+    }
 }
 
 #[test]
 fn decrypt_aes_openssl() {
     let aes = crate::aes::Aes256Cbc::<AesOpenSslScope>::from_key_iv(AES_KEY, AES_IV);
     let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED).unwrap();
-    assert_eq!(decrypted, PLAINTEXT)
+    assert_eq!(decrypted, PLAINTEXT);
+
+    #[cfg(feature = "b64")]
+    {
+        let decrypted = aes.decrypt_b64_to_string(ENCRYPTED_B64).unwrap();
+        assert_eq!(decrypted, PLAINTEXT);
+    }
 }
 
 #[test]
 fn encrypt_aes_rustcrypto() {
-    let rustcrypto_aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::from_key_iv(AES_KEY, AES_IV);
-    let enrypted = rustcrypto_aes.encrypt_str_to_vec(PLAINTEXT).unwrap();
-    assert_eq!(enrypted, ENCRYPTED)
+    let aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::from_key_iv(AES_KEY, AES_IV);
+    let enrypted = aes.encrypt_str_to_vec(PLAINTEXT).unwrap();
+    assert_eq!(enrypted, ENCRYPTED);
+
+    #[cfg(feature = "b64")]
+    {
+        let encrypted_b64 = aes.encrypt_str_to_b64(PLAINTEXT).unwrap();
+        assert_eq!(encrypted_b64, ENCRYPTED_B64);
+    }
 }
 
 #[test]
 fn decrypt_aes_rustcrypto() {
     let aes = crate::aes::Aes256Cbc::<AesRustCryptoScope>::from_key_iv(AES_KEY, AES_IV);
     let decrypted = aes.decrypt_bytes_to_string(ENCRYPTED).unwrap();
-    assert_eq!(decrypted, PLAINTEXT)
+    assert_eq!(decrypted, PLAINTEXT);
+
+    #[cfg(feature = "b64")]
+    {
+        let decrypted = aes.decrypt_b64_to_string(ENCRYPTED_B64).unwrap();
+        assert_eq!(decrypted, PLAINTEXT);
+    }
 }
