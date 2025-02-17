@@ -4,6 +4,12 @@
 //!
 //! Note: features `rust-crypto` and `b64` must be enabled.
 //!
+//! ⚠️ **Security Warning**
+//! 
+//! The Rust-Crypto RSA crate that is used here under the hood is vulnerable to the [Marvin Attack](https://people.redhat.com/~hkario/marvin/) which could enable private key recovery by a network attacker (see [RUSTSEC-2023-0071](https://rustsec.org/advisories/RUSTSEC-2023-0071.html)).
+//! 
+//! You can follow the work of the Rust-Crypto developers on mitigating this issue in [#390](https://github.com/RustCrypto/RSA/issues/390).
+//! 
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
 //! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
