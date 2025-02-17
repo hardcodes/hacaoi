@@ -1,4 +1,5 @@
 use crate::hybrid_crypto::HybridCryptoFunctions;
+use crate::rsa::RsaKeysFunctions;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::env;
@@ -8,6 +9,7 @@ const MIN_PLAINTEXT_LENGTH: usize = 14;
 const MAX_PLAINTEXT_LENGTH: usize = 8192;
 // (insecure) password of the rsa private keys in resources/tests/rsa
 const RSA_PASSPHRASE: &str = "12345678901234";
+const PLAINTEXT: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 
 #[test]
 fn hybrid_crypto_openssl_rustcrypto() {
@@ -60,4 +62,46 @@ fn hybrid_crypto_openssl_rustcrypto() {
             break;
         }
     }
+}
+
+#[test]
+fn hybrid_crypto_openssl_deref() {
+    let openssl_hybrid_crypto = crate::openssl::hybrid_crypto::HybridCrypto::from_file(
+        Path::new(
+            &env::current_dir()
+                .unwrap()
+                .join("resources/tests/rsa/rsa_private.pkcs1.key"),
+        ),
+        RSA_PASSPHRASE,
+    )
+    .unwrap();
+
+    let rsa_encrypted_b64 = openssl_hybrid_crypto
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = openssl_hybrid_crypto
+        .decrypt_b64_pkcs1v15_padding_to_string(&rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
+}
+
+#[test]
+fn hybrid_crypto_rust_crypto_deref() {
+    let rust_hybrid_crypto = crate::rust_crypto::hybrid_crypto::HybridCrypto::from_file(
+        Path::new(
+            &env::current_dir()
+                .unwrap()
+                .join("resources/tests/rsa/rsa_private.pkcs8.key"),
+        ),
+        RSA_PASSPHRASE,
+    )
+    .unwrap();
+
+    let rsa_encrypted_b64 = rust_hybrid_crypto
+        .encrypt_str_pkcs1v15_padding_to_b64(PLAINTEXT)
+        .unwrap();
+    let openssl_decrypted = rust_hybrid_crypto
+        .decrypt_b64_pkcs1v15_padding_to_string(&rsa_encrypted_b64)
+        .unwrap();
+    assert_eq!(PLAINTEXT, &openssl_decrypted);
 }

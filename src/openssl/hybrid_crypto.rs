@@ -37,6 +37,7 @@ use crate::error::HacaoiError;
 use crate::hybrid_crypto::HybridCryptoFunctions;
 use crate::openssl::rsa::RsaKeys;
 use crate::rsa::RsaKeysFunctions;
+use std::ops::Deref;
 use std::path::Path;
 
 /// The [`HybridCrypto`] struct is used to encrypt and
@@ -58,6 +59,14 @@ use std::path::Path;
 /// at application level.
 pub struct HybridCrypto {
     rsa_keys: RsaKeys,
+}
+
+/// Get a reference to the stored RsaKeys.
+impl Deref for HybridCrypto {
+    type Target = RsaKeys;
+    fn deref(&'_ self) -> &'_ RsaKeys {
+        &self.rsa_keys
+    }
 }
 
 impl HybridCryptoFunctions for HybridCrypto {
