@@ -4,7 +4,9 @@ use std::path::Path;
 
 /// This trait defines the functions that are implemented by the
 /// OpenSSL and RustCrypto variants.
-pub trait HybridCryptoFunctions {
+/// Enforces to implement the supertrait [`Deref`](std::ops::Deref),
+/// so that the inner RsaKeys get accessible.
+pub trait HybridCryptoFunctions: std::ops::Deref {
     /// Build **HybridCrypto** by loading an encrypted RSA
     /// private key file from the given path, hence the
     /// passphrase is needed. The RSA public key is derived
