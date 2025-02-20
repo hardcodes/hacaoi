@@ -1,12 +1,12 @@
 # HaCaOI
 
-**Ha**des **Ca**p **O**f **I**nvisibilty - a Rust libary for encryption and decryption.
+**Ha**des **Ca**p **O**f **I**nvisibilty - a Rust libary crate as a facade for encryption and decryption.
 
 Well, encrypted data is not invisble but the plaintext is, you get the drift.
 
-This Rust library is a facade for
+This Rust library is a [facade](https://en.wikipedia.org/wiki/Facade_pattern) for
 - AES 256 encryption/decryption in CBC mode,
-- RSA encryption/decryption
+- RSA encryption/decryption and signature creation/validation
 - Hybrid encryption/decryption using AES and RSA,
 
 implemented with help of
