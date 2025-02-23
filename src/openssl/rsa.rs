@@ -126,6 +126,12 @@ impl RsaKeysFunctions for RsaKeys {
 
     /// Encrypt a String slice with stored RSA public key
     /// using PKCS#1 v1.5 padding and return it as `Vec<u8>`.
+    ///
+    /// ⚠️ **Deprecation Warning**
+    ///
+    /// This function makes use of the `public_encrypt` function of the
+    /// Rust OpenSSL crate which calls [RSA_public_encrypt](https://docs.openssl.org/master/man3/RSA_public_encrypt/)
+    /// from then openssl library. `RSA_public_encrypt` has been deprecated since OpenSSL 3.
     #[inline(always)]
     fn encrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
@@ -146,6 +152,12 @@ impl RsaKeysFunctions for RsaKeys {
     /// Decrypt `&[u8]` with RSA encrypted data and
     /// PKCS#1 v1.5 padding using the stored RSA private key
     /// and return it as plaintext String.
+    ///
+    /// ⚠️ **Deprecation Warning**
+    ///
+    /// This function makes use of the `private_decrypt` function of the
+    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_public_encrypt/)
+    /// from then openssl library. `RSA_private_decrypt` has been deprecated since OpenSSL 3.
     #[inline(always)]
     fn decrypt_bytes_pkcs1v15_padding_to_vec(
         &self,
@@ -162,6 +174,12 @@ impl RsaKeysFunctions for RsaKeys {
     /// Decrypt `&[u8]` with RSA encrypted data and
     /// PKCS#1 v1.5 padding using the stored RSA private key
     /// and return it as plaintext String.
+    ///
+    /// ⚠️ **Deprecation Warning**
+    ///
+    /// This function makes use of the `private_decrypt` function of the
+    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_public_encrypt/)
+    /// from then openssl library. `RSA_private_decrypt` has been deprecated since OpenSSL 3.
     #[inline(always)]
     fn decrypt_bytes_pkcs1v15_padding_to_string(
         &self,
