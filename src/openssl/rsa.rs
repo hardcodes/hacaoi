@@ -156,7 +156,7 @@ impl RsaKeysFunctions for RsaKeys {
     /// ⚠️ **Deprecation Warning**
     ///
     /// This function makes use of the `private_decrypt` function of the
-    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_public_encrypt/)
+    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_private_decrypt/)
     /// from then openssl library. `RSA_private_decrypt` has been deprecated since OpenSSL 3.
     #[inline(always)]
     fn decrypt_bytes_pkcs1v15_padding_to_vec(
@@ -178,7 +178,7 @@ impl RsaKeysFunctions for RsaKeys {
     /// ⚠️ **Deprecation Warning**
     ///
     /// This function makes use of the `private_decrypt` function of the
-    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_public_encrypt/)
+    /// Rust OpenSSL crate which calls [RSA_private_decrypt](https://docs.openssl.org/master/man3/RSA_private_decrypt/)
     /// from then openssl library. `RSA_private_decrypt` has been deprecated since OpenSSL 3.
     #[inline(always)]
     fn decrypt_bytes_pkcs1v15_padding_to_string(
