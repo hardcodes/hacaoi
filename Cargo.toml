@@ -1,7 +1,7 @@
 [package]
 name = "hacaoi"
 description = "HaCaOI - Hades Cap Of Invisibilty - a rust library crate as a facade for encryption and decryption"
-version = "0.1.13"
+version = "0.1.14"
 edition = "2021"
 authors = ["Sven Putze <github@hardcodes.de>"]
 readme = "README.md"
@@ -20,7 +20,7 @@ rand = { version = "0.8" }
 # needed features:
 # - pkcs5: load encrypted rsa private key
 # - sha2:  sha512 signature creation and validation
-rsa = { version = "0.9.7", features = ["pkcs5", "sha2"], optional = true }
+rsa = { version = "0.9.8", features = ["pkcs5", "sha2"], optional = true }
 zeroize = "1.8"
 
 
