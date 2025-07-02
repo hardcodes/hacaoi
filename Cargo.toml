@@ -14,7 +14,7 @@ publish = false
 aes = { version = "0.8.4", optional = true }
 base64 = { version = "0.22.1", optional = true }
 cbc = { version = "0.1.2", optional = true }
-openssl = { version = "0.10.71", optional = true }
+openssl = { version = "0.10.73", optional = true }
 # stay on 0.8, dependency to rust crypto rsa
 rand = { version = "0.8" }
 # needed features:
