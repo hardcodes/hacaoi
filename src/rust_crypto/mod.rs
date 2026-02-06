@@ -15,7 +15,7 @@
 //! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
 //!
 //! fn main() {
-//!     let rsa = hacaoi::openssl::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
+//!     let rsa = hacaoi::rust_crypto::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
 //!     let encrypted_b64 = rsa.encrypt_str_pkcs1v15_padding_to_b64("plaintext").unwrap();
 //!     let decrypted = rsa.decrypt_b64_pkcs1v15_padding_to_string(&encrypted_b64).unwrap();
 //!     assert_eq!("plaintext", &decrypted);
@@ -41,9 +41,9 @@
 //! }
 //! ```
 //!
-//! ## Hybrid encryption - OpenSSL
+//! ## Hybrid encryption - RustCrypto
 //!
-//! Note: features `openssl` and `b64` must be enabled.
+//! Note: features `rust-crypto` and `b64` must be enabled.
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
