@@ -145,6 +145,30 @@ impl RsaKeysFunctions for RsaKeys {
         }
     }
 
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// ⚠️ **Not implemented** (pull requests welcome)
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn encrypt_bytes_oaep_padding_to_vec(
+        &self,
+        _unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        todo!();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Decryption
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +196,28 @@ impl RsaKeysFunctions for RsaKeys {
     }
 
     /// Decrypt `&[u8]` with RSA encrypted data and
+    /// OAEP padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// ⚠️ **Not implemented** (pull requests welcome)
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn decrypt_bytes_oaep_padding_to_vec(
+        &self,
+        _encrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError> {
+        todo!();
+    }
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
     /// PKCS#1 v1.5 padding using the stored RSA private key
     /// and return it as plaintext String.
     ///
@@ -193,6 +239,28 @@ impl RsaKeysFunctions for RsaKeys {
             }
         };
         Ok(decrypted_data.trim_matches(char::from(0)).to_string())
+    }
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
+    /// PKCS#1 v1.5 padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// ⚠️ **Not implemented** (pull requests welcome)
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn decrypt_bytes_oaep_padding_to_string(
+        &self,
+        _encrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError> {
+        todo!();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////

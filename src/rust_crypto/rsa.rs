@@ -33,6 +33,10 @@ use rsa::traits::PublicKeyParts;
 use rsa::{Pkcs1v15Encrypt, RsaPrivateKey};
 use std::path::Path;
 
+use rsa::sha2::Sha256;
+use rsa::Oaep;
+use sha1::Sha1;
+
 // min bit size of the modulus (modulus * 8 = rsa key bits)
 const MIN_RSA_MODULUS_SIZE: u32 = 256;
 
@@ -42,7 +46,7 @@ pub struct RsaKeys {
     // RSA seems to zeroize the private key on drop().
     // ```ignore
     // impl ZeroizeOnDrop for RsaPrivateKey {}
-    //``````
+    // ```
     private_key: rsa::RsaPrivateKey,
     public_key: rsa::RsaPublicKey,
 }
@@ -110,6 +114,36 @@ impl RsaKeysFunctions for RsaKeys {
         }
     }
 
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn encrypt_bytes_oaep_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let mut rng = rand::thread_rng();
+        let oaep_padding = Oaep::new_with_mgf_hash::<Sha256, Sha1>();
+        match self
+            .public_key
+            .encrypt(&mut rng, oaep_padding, unencrypted_bytes)
+        {
+            Err(e) => Err(format!("Could not rsa encrypt given value: {}", &e).into()),
+            Ok(buf) => Ok(buf),
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////
     // Decryption
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +163,30 @@ impl RsaKeysFunctions for RsaKeys {
     }
 
     /// Decrypt `&[u8]` with RSA encrypted data and
+    /// OAEP padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn decrypt_bytes_oaep_padding_to_vec(
+        &self,
+        encrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError> {
+        let oaep_padding = Oaep::new_with_mgf_hash::<Sha256, Sha1>();
+        match self.private_key.decrypt(oaep_padding, encrypted_bytes) {
+            Err(e) => Err(format!("Could not rsa decrypt given value: {}", &e).into()),
+            Ok(buf) => Ok(buf),
+        }
+    }
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
     /// PKCS#1 v1.5 padding using the stored RSA private key
     /// and return it as plaintext String.
     #[inline(always)]
@@ -137,6 +195,33 @@ impl RsaKeysFunctions for RsaKeys {
         encrypted_bytes: &[u8],
     ) -> Result<String, HacaoiError> {
         let decrypted_bytes = self.decrypt_bytes_pkcs1v15_padding_to_vec(encrypted_bytes)?;
+        let decrypted_data = match String::from_utf8(decrypted_bytes) {
+            Ok(s) => s,
+            Err(e) => {
+                return Err(HacaoiError::FromUtf8Error(e));
+            }
+        };
+        Ok(decrypted_data.trim_matches(char::from(0)).to_string())
+    }
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
+    /// PKCS#1 v1.5 padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn decrypt_bytes_oaep_padding_to_string(
+        &self,
+        encrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError> {
+        let decrypted_bytes = self.decrypt_bytes_oaep_padding_to_vec(encrypted_bytes)?;
         let decrypted_data = match String::from_utf8(decrypted_bytes) {
             Ok(s) => s,
             Err(e) => {

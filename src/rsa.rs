@@ -48,6 +48,25 @@ pub trait RsaKeysFunctions {
     {
         self.encrypt_bytes_pkcs1v15_padding_to_vec(plaintext.as_bytes())
     }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn encrypt_str_oaep_padding_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        self.encrypt_bytes_oaep_padding_to_vec(plaintext.as_bytes())
+    }
+
     /// Encrypt a String slice with stored RSA public key
     /// using PKCS#1 v1.5 padding and return it as `Vec<u8>`.
     fn encrypt_bytes_pkcs1v15_padding_to_vec(
@@ -56,6 +75,25 @@ pub trait RsaKeysFunctions {
     ) -> Result<Vec<u8>, HacaoiError>
     where
         Self: Sized;
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn encrypt_bytes_oaep_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized;
+
     /// Encrypt `&[u8]` slice with stored RSA public key
     /// using PKCS#1 v1.5 padding and and return it as base64
     /// encoded String.
@@ -71,6 +109,30 @@ pub trait RsaKeysFunctions {
         Ok(buf.to_base64_encoded())
     }
 
+    /// Encrypt `&[u8]` slice with stored RSA public key
+    /// using OAEP padding and and return it as base64
+    /// encoded String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn encrypt_bytes_oaep_padding_to_b64(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_bytes_oaep_padding_to_vec(unencrypted_bytes)?;
+        Ok(buf.to_base64_encoded())
+    }
+
     /// Encrypt a String slice with stored RSA public key
     /// using PKCS#1 v1.5 padding and return it as base64
     /// encoded String.
@@ -80,6 +142,27 @@ pub trait RsaKeysFunctions {
         Self: Sized,
     {
         let buf: Vec<u8> = self.encrypt_str_pkcs1v15_padding_to_vec(plaintext)?;
+        Ok(buf.to_base64_encoded())
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as base64
+    /// encoded String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn encrypt_str_oaep_padding_to_b64(&self, plaintext: &str) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_str_oaep_padding_to_vec(plaintext)?;
         Ok(buf.to_base64_encoded())
     }
 
@@ -98,9 +181,47 @@ pub trait RsaKeysFunctions {
         Self: Sized;
 
     /// Decrypt `&[u8]` with RSA encrypted data and
+    /// OAEP padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn decrypt_bytes_oaep_padding_to_vec(
+        &self,
+        encrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized;
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
     /// PKCS#1 v1.5 padding using the stored RSA private key
     /// and return it as plaintext String.
     fn decrypt_bytes_pkcs1v15_padding_to_string(
+        &self,
+        encrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError>
+    where
+        Self: Sized;
+
+    /// Decrypt `&[u8]` with RSA encrypted data and
+    /// PKCS#1 v1.5 padding using the stored RSA private key
+    /// and return it as plaintext String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn decrypt_bytes_oaep_padding_to_string(
         &self,
         encrypted_bytes: &[u8],
     ) -> Result<String, HacaoiError>
@@ -124,6 +245,31 @@ pub trait RsaKeysFunctions {
     }
 
     /// Decrypt a base64 encoded String slice with
+    /// RSA encrypted data and OAEP padding
+    /// using the stored RSA private key and return
+    /// it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn decrypt_b64_oaep_padding_to_vec(
+        &self,
+        encrypted_b64_data: &str,
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
+        self.decrypt_bytes_oaep_padding_to_vec(&raw_encrypted_data)
+    }
+
+    /// Decrypt a base64 encoded String slice with
     /// RSA encrypted data and PKCS#1 v1.5 padding
     /// using the stored RSA private key and return
     /// it as plaintext String.
@@ -137,6 +283,31 @@ pub trait RsaKeysFunctions {
     {
         let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
         self.decrypt_bytes_pkcs1v15_padding_to_string(&raw_encrypted_data)
+    }
+
+    /// Decrypt a base64 encoded String slice with
+    /// RSA encrypted data and OAEP padding
+    /// using the stored RSA private key and return
+    /// it as plaintext String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn decrypt_b64_oaep_padding_to_string(
+        &self,
+        encrypted_b64_data: &str,
+    ) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
+        self.decrypt_bytes_oaep_padding_to_string(&raw_encrypted_data)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
