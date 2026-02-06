@@ -1,8 +1,8 @@
 //! # Examples
 //!
-//! ## Hybrid encryption - OpenSSL
+//! ## Hybrid encryption - RustCrypto
 //!
-//! Note: features `openssl` and `b64` must be enabled.
+//! Note: features `rust-crypto` and `b64` must be enabled.
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
