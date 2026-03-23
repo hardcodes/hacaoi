@@ -21,7 +21,7 @@
 //!     assert_eq!("plaintext", &decrypted);
 //! }
 //! ```
-//! 
+//!
 //! ## OAEP encryption - RustCrypto
 //!
 //! Note: features `rust-crypto` and `b64` must be enabled.
