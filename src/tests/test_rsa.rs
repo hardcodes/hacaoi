@@ -200,16 +200,16 @@ fn rsa_oaep_openssl_rustcrypto() {
             .map(char::from)
             .collect();
         // let openssl_rsa_encrypted_b64 = openssl_rsa_keys
-        //     .encrypt_str_pkcs1v15_padding_to_b64(&random_plaintext)
+        //     .encrypt_str_oaep_padding_to_b64(&random_plaintext)
         //     .unwrap();
         let rust_crypto_encrypted_b64 = rust_crypto_keys
-            .encrypt_str_pkcs1v15_padding_to_b64(&random_plaintext)
+            .encrypt_str_oaep_padding_to_b64(&random_plaintext)
             .unwrap();
         // let openssl_decrypted_rust_crypto = openssl_rsa_keys
-        //     .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+        //     .decrypt_b64_oaep_padding_to_string(&rust_crypto_encrypted_b64)
         //     .unwrap();
         let rust_crypto_decryped_openssl = rust_crypto_keys
-            .decrypt_b64_pkcs1v15_padding_to_string(&rust_crypto_encrypted_b64)
+            .decrypt_b64_oaep_padding_to_string(&rust_crypto_encrypted_b64)
             .unwrap();
         // assert_eq!(&random_plaintext, &openssl_decrypted_rust_crypto);
         assert_eq!(&random_plaintext, &rust_crypto_decryped_openssl);
