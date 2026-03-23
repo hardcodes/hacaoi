@@ -9,6 +9,8 @@ const MAX_PLAINTEXT_LENGTH: usize = 8192;
 // (insecure) password of the rsa private keys in resources/tests/rsa
 const RSA_PASSPHRASE: &str = "12345678901234";
 const PLAINTEXT: &str = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+// PLAINTEXT encrypted via `encrypt_str_oaep_padding_to_b64()`.
+const OAEP_ENCRYPTED_B64: &str = "7SyDoKvfYY+TCH19qMKsjqHOnmD8xxlNIYcy5QJd1z4ZhDZkYhXSksP+Fff5cDlHU4sW7/hXbJ+wfts0WxZJfaN7oZyWFmldtEoY1kAQCrRU9GheZEq2E2TYPrqhmRZd3EMj6BgU6jWSV9DwcRQrXkocwyY/kTDbE/JdxD9WqQWWTeDi7cCpIgr+AOkY9ckocru6QFFB5K15f4UOyuKgS/K+oqZM3tVWT7PAUovrLJMBHBpSIw/4m36bm1NijA2MFn9Y9iFlBOM9hkNYeOLkjEZfgSwLoaz2yPNEwRaH61kG6nOfUy1ZB/FbP9KBNRtSbY7v3JRxWOIIXTe1azjvPY3svhYr4GwKvu4xO4zQx2I9Cwgn8qTvJYowtiBg3lyGxutrrEy3qo2wJgERCwB38fE9yXWkfo1G8bm96AIGpMvW6aHGGvEkqNjk6wqADNNeSYukgIE6ZJbZgBem03NNeeMwtq99fcbjM0Dhk57Fbr5iK2iCbNMDXrEHHoLnHHhpv3++5QnFgeA0Kiyy4oNVluttvOLEDUIgdZ/Zq8+7ScAXyrw7r5a+0cChF27Ur9xuyVwzgZStEFTm0eoQi31hRPiEwASKf8e7Q6H2yRLOj/88nKw8dt6fH9Z/f90nmPocM+qz7K1jZ2SIO4K8TUSvKT9IJIgi37fWY0PZQ0m6YvQ=";
 
 #[test]
 fn rsa_pkcs1v15_openssl_random_1024bit() {
@@ -220,6 +222,30 @@ fn rsa_oaep_openssl_rustcrypto() {
 }
 
 #[test]
+fn rsa_oaep_rustcrypto() {
+    let rust_crypto_keys = crate::rust_crypto::rsa::RsaKeys::from_file(
+        Path::new(
+            &env::current_dir()
+                .unwrap()
+                .join("resources/tests/rsa/rsa_private.pkcs8.key"),
+        ),
+        RSA_PASSPHRASE,
+    )
+    .unwrap();
+    let rust_crypto_encrypted_b64 = rust_crypto_keys
+        .encrypt_str_oaep_padding_to_b64(&PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_oaep_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(&PLAINTEXT, &rust_crypto_decryped);
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_oaep_padding_to_string(&OAEP_ENCRYPTED_B64)
+        .unwrap();
+    assert_eq!(&PLAINTEXT, &rust_crypto_decryped);
+}
+
+#[test]
 fn rsa_sha512_signature_openssl_rustcrypto() {
     let openssl_rsa_keys = crate::openssl::rsa::RsaKeys::from_file(
         Path::new(
@@ -266,4 +292,3 @@ fn rsa_sha512_signature_openssl_rustcrypto() {
         }
     }
 }
-
