@@ -306,7 +306,12 @@ pub trait RsaKeysFunctions {
     where
         Self: Sized,
     {
-        let raw_encrypted_data = Vec::from_base64_encoded(encrypted_b64_data)?;
+        let raw_encrypted_data = match Vec::from_base64_encoded(encrypted_b64_data) {
+            Ok(raw) => raw,
+            Err(e) => {
+                return Err(format!("cannot base64 decode encrypted string: {}", &e).into());
+            }
+        };
         self.decrypt_bytes_oaep_padding_to_string(&raw_encrypted_data)
     }
 
