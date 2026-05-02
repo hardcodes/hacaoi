@@ -106,13 +106,13 @@ impl RsaKeysFunctions for RsaKeys {
         ) {
             Ok(p) => p,
             Err(e) => {
-                return Err(format!("cannot load rsa private key: {}", e).into());
+                return Err(format!("cannot load rsa private key: {e}").into());
             }
         };
         let rsa_public_key_pem = rsa_private_key.public_key_to_pem()?;
         let rsa_public_key = Rsa::public_key_from_pem(&rsa_public_key_pem)?;
         if rsa_public_key.size() < MIN_RSA_MODULUS_SIZE {
-            return Err(format!("modulus is < {} bytes", MIN_RSA_MODULUS_SIZE).into());
+            return Err(format!("modulus is < {MIN_RSA_MODULUS_SIZE} bytes").into());
         }
         Ok(RsaKeys {
             private_key: rsa_private_key,

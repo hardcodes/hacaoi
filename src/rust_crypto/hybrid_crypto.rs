@@ -116,7 +116,7 @@ impl HybridCryptoFunctions for HybridCrypto {
             .rsa_keys
             .encrypt_bytes_pkcs1v15_padding_to_b64(&aes.key_iv_as_vec())?;
         let encrypted_payload_b64 = aes.encrypt_str_to_vec(plaintext_data)?.to_base64_encoded();
-        return Ok(format_args!("v1.{encrypted_key_iv_b64}.{encrypted_payload_b64}").to_string());
+        Ok(format_args!("v1.{encrypted_key_iv_b64}.{encrypted_payload_b64}").to_string())
     }
 
     /// Decrypt a hybrid encrypted and base64 encoded string slice.
@@ -138,7 +138,7 @@ impl HybridCryptoFunctions for HybridCrypto {
         // we can access the elements since we checked the length first.
         let encryption_scheme = elements.first().unwrap();
         if "v1" != *encryption_scheme {
-            return Err(format!("Unsupported encryption scheme: {}", encryption_scheme).into());
+            return Err(format!("Unsupported encryption scheme: {encryption_scheme}").into());
         }
 
         let encrypted_key_iv = Vec::from_base64_encoded(elements.get(1).unwrap())?;

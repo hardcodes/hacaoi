@@ -142,7 +142,7 @@ impl HybridCryptoFunctions for HybridCrypto {
         // we can access the elements since we checked the length first.
         let encryption_scheme = elements.first().unwrap();
         if "v1" != *encryption_scheme {
-            return Err(format!("Unsupported encryption scheme: {}", encryption_scheme).into());
+            return Err(format!("Unsupported encryption scheme: {encryption_scheme}").into());
         }
 
         let encrypted_key_iv = Vec::from_base64_encoded(elements.get(1).unwrap())?;

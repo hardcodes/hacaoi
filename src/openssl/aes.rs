@@ -40,8 +40,8 @@ impl Aes256CbcFunctions<AesOpenSslScope> for Aes256Cbc<AesOpenSslScope> {
     fn decrypt_bytes_to_string(&self, encrypted_bytes: &[u8]) -> Result<String, HacaoiError> {
         let cipher = Cipher::aes_256_cbc();
         let decrypted_payload = decrypt(cipher, &self.key(), Some(&self.iv()), encrypted_bytes)?;
-        return Ok(String::from_utf8(decrypted_payload)?
+        Ok(String::from_utf8(decrypted_payload)?
             .trim_matches(char::from(0))
-            .to_string());
+            .to_string())
     }
 }

@@ -46,8 +46,7 @@ impl Aes256CbcFunctions<AesRustCryptoScope> for Aes256Cbc<AesRustCryptoScope> {
         let mut buf: Vec<u8> = vec![0; plaintext_len + padding_len];
         buf[0..plaintext_len].copy_from_slice(plaintext.as_bytes());
         let aes256_encryptor = Aes256CbcEnc::new(&self.key().into(), &self.iv().into());
-        let ciphertext = match aes256_encryptor.encrypt_padded::<Pkcs7>(&mut buf, plaintext_len)
-        {
+        let ciphertext = match aes256_encryptor.encrypt_padded::<Pkcs7>(&mut buf, plaintext_len) {
             Err(e) => {
                 return Err(format!("{}", &e).into());
             }

@@ -80,12 +80,12 @@ impl RsaKeysFunctions for RsaKeys {
         ) {
             Ok(p) => p,
             Err(e) => {
-                return Err(format!("cannot load rsa private key: {}", e).into());
+                return Err(format!("cannot load rsa private key: {e}").into());
             }
         };
         let rsa_public_key = rsa_private_key.to_public_key();
         if rsa_public_key.n() < &rsa::BigUint::from_slice(&[MIN_RSA_MODULUS_SIZE]) {
-            return Err(format!("modulus is < {} bytes", MIN_RSA_MODULUS_SIZE).into());
+            return Err(format!("modulus is < {MIN_RSA_MODULUS_SIZE} bytes").into());
         }
         Ok(RsaKeys {
             private_key: rsa_private_key,

@@ -245,7 +245,7 @@ dependencies = [
 
 [[package]]
 name = "hacaoi"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "aes 0.9.0",
  "base64",

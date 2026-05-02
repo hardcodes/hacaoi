@@ -27,16 +27,16 @@ pub enum HacaoiError {
 impl std::fmt::Display for HacaoiError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            HacaoiError::IoError(e) => write!(f, "{}", e),
-            HacaoiError::FromUtf8Error(e) => write!(f, "{}", e),
-            HacaoiError::Utf8Error(e) => write!(f, "{}", e),
+            HacaoiError::IoError(e) => write!(f, "{e}"),
+            HacaoiError::FromUtf8Error(e) => write!(f, "{e}"),
+            HacaoiError::Utf8Error(e) => write!(f, "{e}"),
             #[cfg(feature = "openssl")]
-            HacaoiError::OpenSslErrorStack(e) => write!(f, "{:?}", e),
+            HacaoiError::OpenSslErrorStack(e) => write!(f, "{e:?}"),
             #[cfg(feature = "rust-crypto")]
-            HacaoiError::RsaError(e) => write!(f, "{}", e),
-            HacaoiError::StringError(e) => write!(f, "{}", e),
+            HacaoiError::RsaError(e) => write!(f, "{e}"),
+            HacaoiError::StringError(e) => write!(f, "{e}"),
             #[cfg(feature = "b64")]
-            HacaoiError::Base64DecodeError(e) => write!(f, "{}", e),
+            HacaoiError::Base64DecodeError(e) => write!(f, "{e}"),
         }
     }
 }
