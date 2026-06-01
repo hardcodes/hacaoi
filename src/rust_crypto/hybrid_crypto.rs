@@ -32,7 +32,7 @@ use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesRustCryptoScope};
 use crate::base64_trait::{Base64StringConversions, Base64VecU8Conversions};
 use crate::error::HacaoiError;
 use crate::hybrid_crypto::HybridCryptoFunctions;
-use crate::rsa::RsaKeysFunctions;
+use crate::rsa::PrivatePublicKeysRsaFunctions;
 use crate::rust_crypto::rsa::RsaKeys;
 use std::ops::Deref;
 use std::path::Path;

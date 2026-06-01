@@ -14,7 +14,7 @@
 //!
 #![cfg_attr(all(feature = "openssl", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "openssl", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::openssl::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
@@ -30,7 +30,7 @@
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::rust_crypto::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
@@ -46,7 +46,7 @@
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::rust_crypto::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
@@ -62,7 +62,7 @@
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::rust_crypto::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();

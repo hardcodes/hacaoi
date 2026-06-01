@@ -6,7 +6,7 @@
 //!
 #![cfg_attr(all(feature = "openssl", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "openssl", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::openssl::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
@@ -61,7 +61,7 @@
 //! ```
 
 use crate::error::HacaoiError;
-use crate::rsa::{KeySize, RsaKeysFunctions};
+use crate::rsa::{KeySize, PrivatePublicKeysRsaFunctions};
 use openssl::hash::MessageDigest;
 use openssl::pkey::PKey;
 use openssl::rsa::{Padding, Rsa};
@@ -78,7 +78,7 @@ pub struct RsaKeys {
     public_key: Rsa<openssl::pkey::Public>,
 }
 
-impl RsaKeysFunctions for RsaKeys {
+impl PrivatePublicKeysRsaFunctions for RsaKeys {
     /// Build a new random RSA key pair.
     #[inline(always)]
     fn random(key_size: KeySize) -> Result<Self, HacaoiError> {

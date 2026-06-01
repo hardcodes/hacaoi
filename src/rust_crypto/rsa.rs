@@ -13,7 +13,7 @@
 //!
 #![cfg_attr(all(feature = "rust-crypto", feature = "b64"), doc = "```")]
 #![cfg_attr(not(any(feature = "rust-crypto", feature = "b64")), doc = "```ignore")]
-//! use hacaoi::rsa::{RsaKeysFunctions, KeySize};
+//! use hacaoi::rsa::{PrivatePublicKeysRsaFunctions, KeySize};
 //!
 //! fn main() {
 //!     let rsa = hacaoi::rust_crypto::rsa::RsaKeys::random(KeySize::Bit2048).unwrap();
@@ -24,7 +24,7 @@
 //! ```
 
 use crate::error::HacaoiError;
-use crate::rsa::{KeySize, RsaKeysFunctions};
+use crate::rsa::{KeySize, PrivatePublicKeysRsaFunctions};
 use rsa::pkcs1v15::SigningKey;
 use rsa::pkcs8;
 use rsa::sha2::Sha512;
@@ -51,7 +51,7 @@ pub struct RsaKeys {
     public_key: rsa::RsaPublicKey,
 }
 
-impl RsaKeysFunctions for RsaKeys {
+impl PrivatePublicKeysRsaFunctions for RsaKeys {
     /// Build a new random RSA key pair.
     #[inline(always)]
     fn random(key_size: KeySize) -> Result<Self, HacaoiError> {

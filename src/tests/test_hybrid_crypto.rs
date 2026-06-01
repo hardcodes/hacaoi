@@ -1,5 +1,5 @@
 use crate::hybrid_crypto::HybridCryptoFunctions;
-use crate::rsa::RsaKeysFunctions;
+use crate::rsa::PrivatePublicKeysRsaFunctions;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::env;

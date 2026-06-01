@@ -36,7 +36,7 @@ use crate::aes::{Aes256Cbc, Aes256CbcFunctions, AesOpenSslScope};
 use crate::error::HacaoiError;
 use crate::hybrid_crypto::HybridCryptoFunctions;
 use crate::openssl::rsa::RsaKeys;
-use crate::rsa::RsaKeysFunctions;
+use crate::rsa::PrivatePublicKeysRsaFunctions;
 use std::ops::Deref;
 use std::path::Path;
 

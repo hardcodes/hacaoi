@@ -21,7 +21,7 @@ pub enum KeySize {
 /// Encryption and Decryption functions that are
 /// implemented by the OpenSSL and RustCrypto RSA
 /// variants.
-pub trait RsaKeysFunctions {
+pub trait PrivatePublicKeysRsaFunctions {
     /// Build a new random RSA key pair.
     fn random(key_size: KeySize) -> Result<Self, HacaoiError>
     where
