@@ -24,18 +24,17 @@
 //! ```
 
 use crate::error::HacaoiError;
-use crate::rsa::{KeySize, PrivatePublicKeysRsaFunctions};
+use crate::rsa::{KeySize, PrivatePublicKeysRsaFunctions, PublicKeyRsaFunctions};
 use rsa::pkcs1v15::SigningKey;
 use rsa::pkcs8;
+use rsa::sha2::Sha256;
 use rsa::sha2::Sha512;
 use rsa::signature::{Keypair, RandomizedSigner, SignatureEncoding, Verifier};
 use rsa::traits::PublicKeyParts;
-use rsa::{Pkcs1v15Encrypt, RsaPrivateKey};
-use std::path::Path;
-
-use rsa::sha2::Sha256;
 use rsa::Oaep;
+use rsa::{Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey};
 use sha1::Sha1;
+use std::path::Path;
 
 // min bit size of the modulus (modulus * 8 = rsa key bits)
 const MIN_RSA_MODULUS_SIZE: u32 = 256;
@@ -265,6 +264,84 @@ impl PrivatePublicKeysRsaFunctions for RsaKeys {
         match verifying_key.verify(signed_data.as_bytes(), &signature) {
             Err(e) => Err(format!("Invalid signature: {}", &e).into()),
             Ok(_) => Ok(()),
+        }
+    }
+}
+
+/// Holds a RSA public key for
+/// encryption only
+pub struct RsaKey {
+    public_key: rsa::RsaPublicKey,
+}
+
+impl PublicKeyRsaFunctions for RsaKey {
+    /// Loads a RSA ppublic key file from
+    /// the given path.
+    fn from_file<P: AsRef<Path>>(rsa_public_key_path: P) -> Result<Self, HacaoiError> {
+        let rsa_public_key_file = std::fs::read_to_string(rsa_public_key_path)?;
+        let rsa_public_key: RsaPublicKey =
+            match pkcs8::DecodePublicKey::from_public_key_pem(&rsa_public_key_file) {
+                Ok(p) => p,
+                Err(e) => {
+                    return Err(format!("cannot load rsa public key: {e}").into());
+                }
+            };
+        if rsa_public_key.n() < &rsa::BigUint::from_slice(&[MIN_RSA_MODULUS_SIZE]) {
+            return Err(format!("modulus is < {MIN_RSA_MODULUS_SIZE} bytes").into());
+        }
+        Ok(RsaKey {
+            public_key: rsa_public_key,
+        })
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Encryption
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using PKCS#1 v1.5 padding and return it as `Vec<u8>`.
+    #[inline(always)]
+    fn encrypt_bytes_pkcs1v15_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError> {
+        let mut rng = rand::thread_rng();
+        match self
+            .public_key
+            .encrypt(&mut rng, Pkcs1v15Encrypt, unencrypted_bytes)
+        {
+            Err(e) => Err(format!("Could not rsa encrypt given value: {}", &e).into()),
+            Ok(buf) => Ok(buf),
+        }
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[inline(always)]
+    fn encrypt_bytes_oaep_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let mut rng = rand::thread_rng();
+        let oaep_padding = Oaep::new_with_mgf_hash::<Sha256, Sha1>();
+        match self
+            .public_key
+            .encrypt(&mut rng, oaep_padding, unencrypted_bytes)
+        {
+            Err(e) => Err(format!("Could not rsa encrypt given value: {}", &e).into()),
+            Ok(buf) => Ok(buf),
         }
     }
 }

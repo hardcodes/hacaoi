@@ -20,7 +20,7 @@ pub enum KeySize {
 
 /// Encryption and Decryption functions that are
 /// implemented by the OpenSSL and RustCrypto RSA
-/// variants.
+/// variants using a private and public RSA key.
 pub trait PrivatePublicKeysRsaFunctions {
     /// Build a new random RSA key pair.
     fn random(key_size: KeySize) -> Result<Self, HacaoiError>
@@ -360,5 +360,146 @@ pub trait PrivatePublicKeysRsaFunctions {
     {
         let signature_bytes = Vec::from_base64_encoded(signature_b64)?;
         self.validate_sha512_bytes_signature(signed_data, &signature_bytes)
+    }
+}
+
+/// Encryption functions that are
+/// implemented by the OpenSSL and RustCrypto RSA
+/// variants using a public RSA key only.
+pub trait PublicKeyRsaFunctions {
+    /// Loads a RSA ppublic key file from
+    /// the given path.
+    fn from_file<P: AsRef<Path>>(rsa_public_key_path: P) -> Result<Self, HacaoiError>
+    where
+        Self: Sized;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Encryption
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using PKCS#1 v1.5 padding and return it as `Vec<u8>`.
+    fn encrypt_str_pkcs1v15_padding_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        self.encrypt_bytes_pkcs1v15_padding_to_vec(plaintext.as_bytes())
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn encrypt_str_oaep_padding_to_vec(&self, plaintext: &str) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized,
+    {
+        self.encrypt_bytes_oaep_padding_to_vec(plaintext.as_bytes())
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using PKCS#1 v1.5 padding and return it as `Vec<u8>`.
+    fn encrypt_bytes_pkcs1v15_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized;
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as `Vec<u8>`.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    fn encrypt_bytes_oaep_padding_to_vec(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<Vec<u8>, HacaoiError>
+    where
+        Self: Sized;
+
+    /// Encrypt `&[u8]` slice with stored RSA public key
+    /// using PKCS#1 v1.5 padding and and return it as base64
+    /// encoded String.
+    #[cfg(feature = "b64")]
+    fn encrypt_bytes_pkcs1v15_padding_to_b64(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_bytes_pkcs1v15_padding_to_vec(unencrypted_bytes)?;
+        Ok(buf.to_base64_encoded())
+    }
+
+    /// Encrypt `&[u8]` slice with stored RSA public key
+    /// using OAEP padding and and return it as base64
+    /// encoded String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn encrypt_bytes_oaep_padding_to_b64(
+        &self,
+        unencrypted_bytes: &[u8],
+    ) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_bytes_oaep_padding_to_vec(unencrypted_bytes)?;
+        Ok(buf.to_base64_encoded())
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using PKCS#1 v1.5 padding and return it as base64
+    /// encoded String.
+    #[cfg(feature = "b64")]
+    fn encrypt_str_pkcs1v15_padding_to_b64(&self, plaintext: &str) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_str_pkcs1v15_padding_to_vec(plaintext)?;
+        Ok(buf.to_base64_encoded())
+    }
+
+    /// Encrypt a String slice with stored RSA public key
+    /// using OAEP padding and return it as base64
+    /// encoded String.
+    ///
+    /// Optimal Asymmetric Encryption Padding (OAEP) is defined
+    /// in PKCS#1 v2.2. Unlike the older PKCS#1 v1.5 padding
+    /// (vulnerable to padding oracle attacks), OAEP provides
+    /// provable security under rigorous cryptographic assumptions.
+    ///
+    /// The Java people refer to it as
+    ///
+    /// `RSA/ECB/OAEPWithSHA-256AndMGF1Padding`.
+    #[cfg(feature = "b64")]
+    fn encrypt_str_oaep_padding_to_b64(&self, plaintext: &str) -> Result<String, HacaoiError>
+    where
+        Self: Sized,
+    {
+        let buf: Vec<u8> = self.encrypt_str_oaep_padding_to_vec(plaintext)?;
+        Ok(buf.to_base64_encoded())
     }
 }

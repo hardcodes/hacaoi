@@ -22,6 +22,9 @@ pub enum HacaoiError {
     /// [`DecodeError`](base64::DecodeError)s that can occur while decoding bae64.
     #[cfg(feature = "b64")]
     Base64DecodeError(base64::DecodeError),
+    /// [`PemError`](pem::PemError)s that can occur while load a public RSA key.
+    #[cfg(feature = "rust-crypto")]
+    PemError(pem::PemError),
 }
 
 impl std::fmt::Display for HacaoiError {
@@ -37,6 +40,8 @@ impl std::fmt::Display for HacaoiError {
             HacaoiError::StringError(e) => write!(f, "{e}"),
             #[cfg(feature = "b64")]
             HacaoiError::Base64DecodeError(e) => write!(f, "{e}"),
+            #[cfg(feature = "rust-crypto")]
+            HacaoiError::PemError(e) => write!(f, "{e}"),
         }
     }
 }
@@ -86,5 +91,12 @@ impl From<std::string::String> for HacaoiError {
 impl From<base64::DecodeError> for HacaoiError {
     fn from(err: base64::DecodeError) -> Self {
         HacaoiError::Base64DecodeError(err)
+    }
+}
+
+#[cfg(feature = "rust-crypto")]
+impl From<pem::PemError> for HacaoiError {
+    fn from(err: pem::PemError) -> Self {
+        HacaoiError::PemError(err)
     }
 }

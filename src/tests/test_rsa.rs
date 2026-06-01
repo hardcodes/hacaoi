@@ -1,4 +1,4 @@
-use crate::rsa::PrivatePublicKeysRsaFunctions;
+use crate::rsa::{PrivatePublicKeysRsaFunctions, PublicKeyRsaFunctions};
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use std::env;
@@ -291,4 +291,34 @@ fn rsa_sha512_signature_openssl_rustcrypto() {
             break;
         }
     }
+}
+
+#[test]
+fn rsa_public_oaep_rustcrypto() {
+    let rust_crypto_keys = crate::rust_crypto::rsa::RsaKeys::from_file(
+        Path::new(
+            &env::current_dir()
+                .unwrap()
+                .join("resources/tests/rsa/rsa_private.pkcs8.key"),
+        ),
+        RSA_PASSPHRASE,
+    )
+    .unwrap();
+    let rust_crypto_public_key = crate::rust_crypto::rsa::RsaKey::from_file(Path::new(
+        &env::current_dir()
+            .unwrap()
+            .join("resources/tests/rsa/rsa_public.key"),
+    ))
+    .unwrap();
+    let rust_crypto_encrypted_b64 = rust_crypto_public_key
+        .encrypt_str_oaep_padding_to_b64(&PLAINTEXT)
+        .unwrap();
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_oaep_padding_to_string(&rust_crypto_encrypted_b64)
+        .unwrap();
+    assert_eq!(&PLAINTEXT, &rust_crypto_decryped);
+    let rust_crypto_decryped = rust_crypto_keys
+        .decrypt_b64_oaep_padding_to_string(&OAEP_ENCRYPTED_B64)
+        .unwrap();
+    assert_eq!(&PLAINTEXT, &rust_crypto_decryped);
 }
